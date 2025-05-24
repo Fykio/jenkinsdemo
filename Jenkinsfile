@@ -26,15 +26,17 @@ pipeline {
         // Stage 3: Build the Docker image
         stage('Build Docker image') {
             steps {
-                sh 'docker build -t fykio/jenkinsdemo:v2 .'
+                sh 'docker build -t fykio/jenkinsdemo:${BUILD_ID} .'
             }
         }
 
         // Stage 4: Push the Docker image to the registry
         stage('Push Docker image') {
             steps {
-                withDockerRegistry([credentialsId: "DockerHub", url: "https://index.docker.io/v1/"]) {
-                    sh 'docker push fykio/jenkinsdemo:v2'
+                withDockerRegistry([
+                    url: "https://index.docker.io/v1/",
+                    credentialsId: "DockerHub"  ]) {
+                    sh 'docker push fykio/jenkinsdemo:${BUILD_ID}'
                 }
             }
         }
